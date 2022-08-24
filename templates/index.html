@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/main.css">
+    <title>Stable Diffusion</title>
+</head>
+
+<body>
+    <main>
+        <h1>Stable Diffusion</h1>
+        <form action="/generate" method="post">
+            <input type="text" name="prompt" class="prompt" placeholder="AI image prompt"
+                value="Swedish hand-made nature illustration with lakes and woodlands, retro, vintage">
+            <input type="submit" name="Generate">
+            <br><br>
+            <div>Steps: <input type="number" name="steps" value="50"></div>
+        </form>
+        <p class="small">Please wait patiently for the images to be generated (about 20 seconds, more steps will take
+            longer).</p>
+    </main>
+</body>
+
+</html>

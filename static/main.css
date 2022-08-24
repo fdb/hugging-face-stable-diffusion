@@ -1,0 +1,58 @@
+:root {
+    --sans-font: -apple-system,BlinkMacSystemFont,"Avenir Next",Avenir,"Nimbus Sans L",Roboto,"Noto Sans","Segoe UI",Arial,Helvetica,"Helvetica Neue",sans-serif;
+    --bg: #fff;
+    --text: #212121;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: dark;
+        --bg: #212121;
+        --text: #dcdcdc;
+    }
+}
+
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: var(--sans-font);
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    margin: 0;
+}
+main {
+    padding: 20px 10px;
+}
+
+img {
+    max-width: 100%;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 10px;
+}
+
+
+input.prompt {
+    width: 60ch;
+    padding: 0.3rem 0.3rem;
+    font-size: 1.1rem;
+}
+
+input[type="submit"]    {
+    font: inherit;
+    font-size: 1.2rem;
+    padding: 0.3rem 0.3rem;
+}
+
+.small {
+    font-size: 0.8rem;
+    opacity: 0.6;
+}
