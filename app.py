@@ -4,6 +4,7 @@ import math
 import datetime
 import time
 import hashlib
+import random
 
 from flask import Flask, render_template, request
 import torch
@@ -32,17 +33,23 @@ def generate():
     prompt = request.form["prompt"]
     steps = int(request.form.get("steps", 50))
     guidance_scale = float(request.form.get("guidance_scale", 7.5))
+    seed = int(request.form.get("seed", random.random() * 1000000))
     print("steps",steps)
     timestamp = math.floor(time.mktime(datetime.datetime.now().timetuple()))
     prompt_hash = hashlib.md5(bytearray('hello', encoding='utf-8')).hexdigest()
     output_prefix = f"static/out/{timestamp}-{prompt_hash}"
     print(output_prefix)
 
+    generator1 = torch.Generator("cuda").manual_seed(seed + 0)
+    generator2 = torch.Generator("cuda").manual_seed(seed + 1)
+    generator3 = torch.Generator("cuda").manual_seed(seed + 2)
+    generator4 = torch.Generator("cuda").manual_seed(seed + 3)
+
     with autocast("cuda"):
-        image1 = pipe(prompt, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
-        image2 = pipe(prompt, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
-        image3 = pipe(prompt, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
-        image4 = pipe(prompt, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
+        image1 = pipe(prompt, generator=generator1, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
+        image2 = pipe(prompt, generator=generator2, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
+        image3 = pipe(prompt, generator=generator3, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
+        image4 = pipe(prompt, generator=generator4, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
     image1_filename = output_prefix + "-1.png"
     image2_filename = output_prefix + "-2.png"
     image3_filename = output_prefix + "-3.png"
