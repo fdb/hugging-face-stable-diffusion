@@ -15,7 +15,7 @@
         <h2>{{ prompt }}</h2>
         <div class="grid">
             {% for image in images %}
-            <img src="{{ image }}" alt="{{ prompt }}">
+            <a href="{{image}}" target="_blank"><img src="{{ image }}" alt="{{ prompt }}"></a>
             {% endfor %}
         </div>
     </main>
