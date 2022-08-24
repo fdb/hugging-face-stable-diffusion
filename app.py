@@ -40,10 +40,10 @@ def generate():
     output_prefix = f"static/out/{timestamp}-{prompt_hash}"
     print(output_prefix)
 
-    generator1 = torch.Generator("cuda").manual_seed(seed + 1000)
-    generator2 = torch.Generator("cuda").manual_seed(seed + 1001)
-    generator3 = torch.Generator("cuda").manual_seed(seed + 1002)
-    generator4 = torch.Generator("cuda").manual_seed(seed + 1003)
+    generator1 = torch.Generator("cuda").manual_seed(seed * 100 + 0)
+    generator2 = torch.Generator("cuda").manual_seed(seed * 100 + 1)
+    generator3 = torch.Generator("cuda").manual_seed(seed * 100 + 2)
+    generator4 = torch.Generator("cuda").manual_seed(seed * 100 + 3)
 
     with autocast("cuda"):
         image1 = pipe(prompt, generator=generator1, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
