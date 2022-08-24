@@ -5,7 +5,7 @@
 ```
 virtualenv --system-site-packages venv
 source venv/bin/activate
-pip install transformers huggingface diffusers scipy flask
+pip install transformers huggingface diffusers scipy flask ftfy
 ```
 
 Make a token at Hugging Face: https://huggingface.co/settings/tokens
