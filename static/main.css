@@ -56,3 +56,17 @@ input[type="submit"]    {
     font-size: 0.8rem;
     opacity: 0.6;
 }
+
+.form-row {
+    margin-bottom: 0.8rem;
+}
+
+label {
+    display: inline-block;
+    width: 15ch;
+    white-space: nowrap;
+}
+
+.form-row span {
+    margin-left: 1rem;
+}

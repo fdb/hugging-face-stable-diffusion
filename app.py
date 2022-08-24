@@ -31,6 +31,7 @@ def home():
 def generate():
     prompt = request.form["prompt"]
     steps = int(request.form.get("steps", 50))
+    guidance_scale = float(request.form.get("guidance_scale", 7.5))
     print("steps",steps)
     timestamp = math.floor(time.mktime(datetime.datetime.now().timetuple()))
     prompt_hash = hashlib.md5(bytearray('hello', encoding='utf-8')).hexdigest()
@@ -38,10 +39,10 @@ def generate():
     print(output_prefix)
 
     with autocast("cuda"):
-        image1 = pipe(prompt, guidance_scale=7.5, num_inference_steps=steps)["sample"][0]
-        image2 = pipe(prompt, guidance_scale=7.5, num_inference_steps=steps)["sample"][0]
-        image3 = pipe(prompt, guidance_scale=7.5, num_inference_steps=steps)["sample"][0]
-        image4 = pipe(prompt, guidance_scale=7.5, num_inference_steps=steps)["sample"][0]
+        image1 = pipe(prompt, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
+        image2 = pipe(prompt, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
+        image3 = pipe(prompt, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
+        image4 = pipe(prompt, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
     image1_filename = output_prefix + "-1.png"
     image2_filename = output_prefix + "-2.png"
     image3_filename = output_prefix + "-3.png"
