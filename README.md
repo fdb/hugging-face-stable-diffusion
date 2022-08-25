@@ -1,5 +1,7 @@
 # Small web app around Hugging Face's Stable Diffusion
 
+![Screenshot](.github/screenshot.jpg)
+
 ## Setup
 
 ```
