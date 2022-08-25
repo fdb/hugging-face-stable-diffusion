@@ -32,39 +32,35 @@ def home():
 def generate():
     prompt = request.form["prompt"]
     steps = int(request.form.get("steps", 50))
-    guidance_scale = float(request.form.get("guidance_scale", 7.5))
+    guidance_scale = float(request.form.get("guidance_scale", 7))
     seed = int(request.form.get("seed", random.random() * 1000000))
-    print("steps",steps)
+    amount = int(request.form.get("amount", 4))
     timestamp = math.floor(time.mktime(datetime.datetime.now().timetuple()))
     prompt_hash = hashlib.md5(bytearray('hello', encoding='utf-8')).hexdigest()
     output_prefix = f"static/out/{timestamp}-{prompt_hash}"
     print(output_prefix)
 
-    generator1 = torch.Generator("cuda").manual_seed(seed * 100 + 0)
-    generator2 = torch.Generator("cuda").manual_seed(seed * 100 + 1)
-    generator3 = torch.Generator("cuda").manual_seed(seed * 100 + 2)
-    generator4 = torch.Generator("cuda").manual_seed(seed * 100 + 3)
+    generators = []
+    for i in range(amount):
+        generator = torch.Generator("cuda").manual_seed(seed * 100 + i)
+        generators.append(generator)
 
+    images = []
     with autocast("cuda"):
-        image1 = pipe(prompt, generator=generator1, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
-        image2 = pipe(prompt, generator=generator2, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
-        image3 = pipe(prompt, generator=generator3, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
-        image4 = pipe(prompt, generator=generator4, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
-    image1_filename = output_prefix + "-1.png"
-    image2_filename = output_prefix + "-2.png"
-    image3_filename = output_prefix + "-3.png"
-    image4_filename = output_prefix + "-4.png"
+        for generator in generators:
+            image = pipe(prompt, generator=generator, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
+            images.append(image)
 
-    image1.save(image1_filename)
-    image2.save(image2_filename)
-    image3.save(image3_filename)
-    image4.save(image4_filename)
+    filenames = []
+    for i in range(amount):
+        filename = f"{output_prefix}-{i}.png"
+        filenames.append(filename)
+        images[i].save(filename)
 
-    images = [image1_filename, image2_filename,image3_filename, image4_filename]
-    # images = [image1_filename]
-    images = [f"/{filename}" for filename in images]
+    static_urls = [f"/{filename}" for filename in filenames]
+    print(static_urls)
     
-    return render_template("generate.html", prompt=prompt, images=images)
+    return render_template("generate.html", prompt=prompt, images=static_urls)
 
 
 
