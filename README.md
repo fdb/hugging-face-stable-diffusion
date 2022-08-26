@@ -27,3 +27,23 @@ python app.py
 ```
 
 Doing this the first time will download the model. Please be patient.
+
+## Prompt engineering 
+
+The [MidJourney styles and keywords reference](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/) is a useful guide in finding the right terms for promts.
+
+Also check out the [DALL-E 2 prompt book](https://dallery.gallery/the-dalle-2-prompt-book/).
+
+In general, start with the **image type**, e.g.: 
+- "An image of"
+- "A photograph of"
+- "A headshot of"
+- "A painting of"
+- "A vision of"
+- "A depiction of"
+- "A cartoon of"
+- "A drawing of"
+- "A figure of"
+- "An illustration of"
+- "A sketch of"
+- "A portrayal of"
