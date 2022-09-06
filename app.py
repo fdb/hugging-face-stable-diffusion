@@ -16,27 +16,40 @@ device = "cuda"
 
 app = Flask(__name__)
 
+
 def dummy_checker(images, **kwargs):
     return images, False
 
-scheduler = LMSDiscreteScheduler(beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear", num_train_timesteps=1000)
-pipe = StableDiffusionPipeline.from_pretrained(model_id, scheduler=scheduler, use_auth_token=True)
+
+scheduler = LMSDiscreteScheduler(
+    beta_start=0.00085,
+    beta_end=0.012,
+    beta_schedule="scaled_linear",
+    num_train_timesteps=1000,
+)
+pipe = StableDiffusionPipeline.from_pretrained(
+    model_id, scheduler=scheduler, use_auth_token=True
+)
 pipe.safety_checker = dummy_checker
 pipe = pipe.to(device)
+
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
-@app.route('/generate', methods=['POST'])
+
+@app.route("/generate", methods=["POST"])
 def generate():
     prompt = request.form["prompt"]
     steps = int(request.form.get("steps", 50))
     guidance_scale = float(request.form.get("guidance_scale", 7))
     seed = int(request.form.get("seed", random.random() * 1000000))
+    width = int(request.form.get("width", 512))
+    height = int(request.form.get("height", 512))
     amount = int(request.form.get("amount", 4))
     timestamp = math.floor(time.mktime(datetime.datetime.now().timetuple()))
-    prompt_hash = hashlib.md5(bytearray('hello', encoding='utf-8')).hexdigest()
+    prompt_hash = hashlib.md5(bytearray("hello", encoding="utf-8")).hexdigest()
     output_prefix = f"static/out/{timestamp}-{prompt_hash}"
     print(output_prefix)
 
@@ -48,7 +61,14 @@ def generate():
     images = []
     with autocast("cuda"):
         for generator in generators:
-            image = pipe(prompt, generator=generator, guidance_scale=guidance_scale, num_inference_steps=steps)["sample"][0]
+            image = pipe(
+                prompt,
+                generator=generator,
+                guidance_scale=guidance_scale,
+                num_inference_steps=steps,
+                width=width,
+                height=height,
+            )["sample"][0]
             images.append(image)
 
     filenames = []
@@ -59,11 +79,9 @@ def generate():
 
     static_urls = [f"/{filename}" for filename in filenames]
     print(static_urls)
-    
+
     return render_template("generate.html", prompt=prompt, images=static_urls)
 
 
-
-
-if __name__=='__main__':
-    app.run(debug=True, port=8000, host='0.0.0.0') 
+if __name__ == "__main__":
+    app.run(debug=True, port=8000, host="0.0.0.0")
