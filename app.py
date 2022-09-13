@@ -32,6 +32,7 @@ pipe = StableDiffusionPipeline.from_pretrained(
 )
 pipe.safety_checker = dummy_checker
 pipe = pipe.to(device)
+generator = torch.Generator("cuda")
 
 
 @app.route("/")
@@ -60,7 +61,8 @@ def generate():
 
     images = []
     with autocast("cuda"):
-        for generator in generators:
+        for i in range(amount):
+            generator.manual_seed(seed * 100 + i)
             image = pipe(
                 prompt,
                 generator=generator,
