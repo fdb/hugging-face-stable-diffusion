@@ -11,7 +11,7 @@ import torch
 from torch import autocast
 from diffusers import StableDiffusionPipeline, LMSDiscreteScheduler
 
-model_id = "CompVis/stable-diffusion-v1-4"
+model_id = "runwayml/stable-diffusion-v1-5"
 device = "cuda"
 
 app = Flask(__name__)
@@ -54,24 +54,18 @@ def generate():
     output_prefix = f"static/out/{timestamp}-{prompt_hash}"
     print(output_prefix)
 
-    generators = []
-    for i in range(amount):
-        generator = torch.Generator("cuda").manual_seed(seed * 100 + i)
-        generators.append(generator)
-
     images = []
     with autocast("cuda"):
-        for i in range(amount):
-            generator.manual_seed(seed * 100 + i)
-            image = pipe(
-                prompt,
-                generator=generator,
-                guidance_scale=guidance_scale,
-                num_inference_steps=steps,
-                width=width,
-                height=height,
-            )["sample"][0]
-            images.append(image)
+        generator.manual_seed(seed)
+        images = pipe(
+            prompt,
+            generator=generator,
+            guidance_scale=guidance_scale,
+            num_inference_steps=steps,
+            width=width,
+            height=height,
+            num_images_per_prompt=amount
+        ).images
 
     filenames = []
     for i in range(amount):
